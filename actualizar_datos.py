@@ -6,7 +6,7 @@ from collections import Counter
 # 1. Configuración
 TOKEN = os.environ.get("KOBO_TOKEN")
 ASSET_UID = "apohavweLAvySyRaVnviaN"
-URL = f"https://eu.kobotoolbox.org/api/v2/assets/{ASSET_UID}/data.json"
+URL = f"https://eu.kobotoolbox.org/api/v2/assets/{ASSET_UID}/data.json" 
 
 headers = {"Authorization": f"Token {TOKEN}"}
 

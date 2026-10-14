@@ -1,0 +1,41 @@
+name: Actualizar datos de KoboToolbox
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Se ejecuta automáticamente cada 30 minutos
+  workflow_dispatch: # Te permite hacer clic en un botón para ejecutarlo a mano
+
+permissions:
+  contents: write # Fundamental: permite que GitHub Actions guarde el archivo nuevo
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Ejecutar script de extracción
+        env:
+          KOBO_TOKEN: ${{ secrets.KOBO_TOKEN }}
+        run: python actualizar_datos.py
+
+      - name: Guardar y subir el nuevo JSON
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Agrega el archivo JSON que creó el script
+          git add datos/datos.json
+          
+          # Solo hace commit y push si el archivo realmente cambió
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Actualiza datos JSON desde Kobo" && git push)
